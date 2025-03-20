@@ -71,9 +71,16 @@ const Navigation = () => {
             
             {currentUser ? (
               <div className="flex items-center space-x-2">
-                <span className="text-white text-sm hidden lg:inline">
-                  {currentUser.email}
-                </span>
+                <div className="user-profile-container">
+                  <img 
+                    src={currentUser.photoURL || "https://ui-avatars.com/api/?name=" + (currentUser.displayName || currentUser.email?.charAt(0))}
+                    alt="User Profile" 
+                    className="user-profile-pic"
+                  />
+                  <span className="text-white text-sm hidden lg:inline ml-2">
+                    {currentUser.displayName || currentUser.email?.split('@')[0]}
+                  </span>
+                </div>
                 <button
                   onClick={handleLogout}
                   className="auth-btn"
@@ -121,16 +128,28 @@ const Navigation = () => {
         </Link>
         
         {currentUser ? (
-          <button
-            onClick={() => {
-              handleLogout();
-              setMobileMenuOpen(false);
-            }}
-            className="mobile-auth-btn"
-          >
-            <i className="fas fa-sign-out-alt mr-2"></i>
-            Logout
-          </button>
+          <div className="mobile-user-profile">
+            <div className="flex items-center space-x-2 mb-3">
+              <img 
+                src={currentUser.photoURL || "https://ui-avatars.com/api/?name=" + (currentUser.displayName || currentUser.email?.charAt(0))}
+                alt="User Profile" 
+                className="user-profile-pic"
+              />
+              <span className="text-white text-sm">
+                {currentUser.displayName || currentUser.email?.split('@')[0]}
+              </span>
+            </div>
+            <button
+              onClick={() => {
+                handleLogout();
+                setMobileMenuOpen(false);
+              }}
+              className="mobile-auth-btn"
+            >
+              <i className="fas fa-sign-out-alt mr-2"></i>
+              Logout
+            </button>
+          </div>
         ) : (
           <button
             onClick={() => {
