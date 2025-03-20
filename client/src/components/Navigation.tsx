@@ -1,16 +1,11 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
-import { useAuth } from "../contexts/AuthContext";
-import AuthModal from "./AuthModal";
 
 const Navigation = () => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [authModalOpen, setAuthModalOpen] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(true);
   const [location] = useLocation();
-  
-  const { currentUser, logout } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -28,14 +23,6 @@ const Navigation = () => {
   const toggleTheme = () => {
     setIsDarkMode(!isDarkMode);
     document.body.classList.toggle("light-mode");
-  };
-
-  const handleLogout = async () => {
-    try {
-      await logout();
-    } catch (error) {
-      console.error("Failed to logout", error);
-    }
   };
 
   const isLinkActive = (path: string) => {
@@ -68,36 +55,6 @@ const Navigation = () => {
             <button onClick={toggleTheme} className="theme-toggle">
               <i className={`fas ${isDarkMode ? "fa-moon" : "fa-sun"}`}></i>
             </button>
-            
-            {currentUser ? (
-              <div className="flex items-center space-x-2">
-                <div className="user-profile-container">
-                  <img 
-                    src={currentUser.photoURL || "https://ui-avatars.com/api/?name=" + (currentUser.displayName || currentUser.email?.charAt(0))}
-                    alt="User Profile" 
-                    className="user-profile-pic"
-                  />
-                  <span className="text-white text-sm hidden lg:inline ml-2">
-                    {currentUser.displayName || currentUser.email?.split('@')[0]}
-                  </span>
-                </div>
-                <button
-                  onClick={handleLogout}
-                  className="auth-btn"
-                >
-                  <i className="fas fa-sign-out-alt mr-2"></i>
-                  Logout
-                </button>
-              </div>
-            ) : (
-              <button
-                onClick={() => setAuthModalOpen(true)}
-                className="auth-btn"
-              >
-                <i className="fas fa-user mr-2"></i>
-                Login
-              </button>
-            )}
           </div>
         </div>
         
@@ -126,48 +83,7 @@ const Navigation = () => {
         <Link href="/contact" onClick={() => setMobileMenuOpen(false)}>
           Contact
         </Link>
-        
-        {currentUser ? (
-          <div className="mobile-user-profile">
-            <div className="flex items-center space-x-2 mb-3">
-              <img 
-                src={currentUser.photoURL || "https://ui-avatars.com/api/?name=" + (currentUser.displayName || currentUser.email?.charAt(0))}
-                alt="User Profile" 
-                className="user-profile-pic"
-              />
-              <span className="text-white text-sm">
-                {currentUser.displayName || currentUser.email?.split('@')[0]}
-              </span>
-            </div>
-            <button
-              onClick={() => {
-                handleLogout();
-                setMobileMenuOpen(false);
-              }}
-              className="mobile-auth-btn"
-            >
-              <i className="fas fa-sign-out-alt mr-2"></i>
-              Logout
-            </button>
-          </div>
-        ) : (
-          <button
-            onClick={() => {
-              setAuthModalOpen(true);
-              setMobileMenuOpen(false);
-            }}
-            className="mobile-auth-btn"
-          >
-            <i className="fas fa-user mr-2"></i>
-            Login
-          </button>
-        )}
       </div>
-
-      <AuthModal
-        isOpen={authModalOpen}
-        onClose={() => setAuthModalOpen(false)}
-      />
     </>
   );
 };
